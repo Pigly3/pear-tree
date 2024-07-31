@@ -1,6 +1,5 @@
-import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
-        Display display = new Display();
+        GameWindow display = new GameWindow();
     }
 }
