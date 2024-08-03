@@ -5,6 +5,7 @@ public class GameWindow extends JFrame{
     GameWindow() {
         Assets assets = new Assets();
         OccupiedSpaceController occupiedSpace = new OccupiedSpaceController();
+        EntityRegistry registry = new EntityRegistry();
         this.setTitle("Pear Tree: Awakening");
         this.setLayout(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -22,14 +23,14 @@ public class GameWindow extends JFrame{
             }
             tileSpace[i] = currentLine;
         }
-        Monster monster = new Monster((byte) 3,(byte) 3, this, occupiedSpace);
-        PlayerController player = new PlayerController((byte) 7, (byte) 7, (byte) 7, (byte) 7, this, occupiedSpace);
+        PlayerController player = new PlayerController((byte) 7, (byte) 7, (byte) 7, (byte) 7, this, occupiedSpace, registry);
+        Monster monster = new Monster((byte) 3,(byte) 3, this, occupiedSpace, registry);
         //General Setup
         this.pack();
         this.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e){
-                player.handleKeyPress(e.getKeyChar(), occupiedSpace);
+                player.handleKeyPress(e.getKeyChar());
             }
             @Override
             public void keyTyped(KeyEvent e){
