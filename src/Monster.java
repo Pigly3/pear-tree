@@ -3,7 +3,7 @@ import java.awt.Container;
 import java.util.Timer;
 import java.util.TimerTask;
 public class Monster {
-    private JLabel monster;
+    private Sprite monster;
     private int registryId;
     public int xPosition;
     public int yPosition;
@@ -21,13 +21,7 @@ public class Monster {
         occupiedSpace.occupySpace(this, screenX, screenY);
         this.occupiedSpace = occupiedSpace;
         Assets assets = new Assets();
-        Container contentPane = frame.getContentPane();
-        JLabel monster = new JLabel();
-        monster.setAlignmentX(SwingConstants.LEFT);
-        monster.setBounds(48*screenX, 48*screenY,48,48);
-        monster.setIcon(assets.monster);
-        contentPane.add(monster);
-        contentPane.setComponentZOrder(monster, 1);
+        Sprite monster = new Sprite(screenX, screenY, assets.monster, frame);
         registryId = registry.registerMonster(this);
         this.monster = monster;
         Timer timer = new Timer();
@@ -118,7 +112,7 @@ public class Monster {
             }
         }
     }
-    public JLabel getMonster(){
+    public Sprite getMonster(){
         return this.monster;
     }
     public void changeDisplayPosition(byte changeX, byte changeY){
@@ -146,7 +140,7 @@ public class Monster {
         this.yPosition += changeY;
         this.displayXPosition = tempToX;
         this.displayYPosition = tempToY;
-        monster.setBounds(48*displayXPosition, 48*displayYPosition,48,48);
+        monster.changePos((byte) displayXPosition, (byte) displayYPosition);
     }
     public void attackPlayer(Player player){
         return;

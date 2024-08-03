@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.Container;
 public class Player {
-    private JLabel player;
+    private Sprite player;
     private OccupiedSpaceController occupiedSpace;
     public int xPosition;
     public int yPosition;
@@ -18,14 +18,9 @@ public class Player {
         occupiedSpace.occupySpace(this, x, y);
         this.occupiedSpace = occupiedSpace;
         Container contentPane = frame.getContentPane();
-        JLabel player = new JLabel();
-        player.setAlignmentX(SwingConstants.LEFT);
+        Sprite player = new Sprite(x, y, assets.player, frame);
         this.displayXPosition = x;
         this.displayYPosition = y;
-        player.setBounds(48*x, 48*y,48,48);
-        player.setIcon(assets.player);
-        contentPane.add(player);
-        contentPane.setComponentZOrder(player, 1);
         registryId = registry.registerPlayer(this);
         this.player = player;
     }
@@ -34,6 +29,6 @@ public class Player {
             return;
         }
         this.occupiedSpace.moveItemInSpace(fromX, fromY, toX, toY);
-        this.player.setBounds(48*toX, 48*toY,48,48);
+        this.player.changePos(toX, toY);
     }
 }
