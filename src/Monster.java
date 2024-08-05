@@ -1,5 +1,3 @@
-import javax.swing.*;
-import java.awt.Container;
 import java.util.Timer;
 import java.util.TimerTask;
 public class Monster {
@@ -9,19 +7,19 @@ public class Monster {
     public int yPosition;
     public int displayXPosition;
     public int displayYPosition;
-    private EntityRegistry registry;
-    public OccupiedSpaceController occupiedSpace;
-    Monster(byte screenX, byte screenY, GameWindow frame, OccupiedSpaceController occupiedSpace, EntityRegistry registry){
+    private GameRegistry registry;
+    private short damage = 3;
+    private short health = 60;
+    Monster(byte screenX, byte screenY, GameRegistry registry){
         if (screenX >= 16 || screenY >= 16){
             return;
         }
         this.displayXPosition = screenX;
         this.displayYPosition = screenY;
         this.registry = registry;
-        occupiedSpace.occupySpace(this, screenX, screenY);
-        this.occupiedSpace = occupiedSpace;
+        registry.occupySpace(this, screenX, screenY);
         Assets assets = new Assets();
-        Sprite monster = new Sprite(screenX, screenY, assets.monster, frame);
+        Sprite monster = new Sprite(screenX, screenY, assets.monster, registry.getWindow());
         registryId = registry.registerMonster(this);
         this.monster = monster;
         Timer timer = new Timer();
@@ -40,6 +38,7 @@ public class Monster {
             if (players[i] != null){
                 if (currentClosestDistance == -1){
                     currentClosest = players[i];
+                    currentClosestDistance = (int) Math.sqrt((players[i].displayXPosition-this.displayXPosition)*(players[i].displayXPosition-this.displayXPosition) + (players[i].displayYPosition-this.displayYPosition)*players[i].displayYPosition-this.displayYPosition);
                 } else {
                     int thisDistance = (int) Math.sqrt((players[i].displayXPosition-this.displayXPosition)*(players[i].displayXPosition-this.displayXPosition) + (players[i].displayYPosition-this.displayYPosition)*players[i].displayYPosition-this.displayYPosition);
                     if (thisDistance < currentClosestDistance){
@@ -61,8 +60,6 @@ public class Monster {
             } else {
                 this.displayYPosition += 1;
             }
-        } else if (Math.abs(closestPlayer.displayXPosition-this.displayXPosition) == 0){
-
         }
         double r = Math.random();
         if (r >= 0.5){
@@ -99,7 +96,7 @@ public class Monster {
                 if (closestPlayer.displayXPosition-this.displayXPosition < 0) {
                     changeDisplayPosition((byte) -1,(byte) 0);
                 } else {
-                    changeDisplayPosition((byte) -1,(byte) 0);
+                    changeDisplayPosition((byte) 1,(byte) 0);
                 }
             } else if (Math.abs(closestPlayer.displayYPosition-this.displayYPosition) == 1){
                 if (closestPlayer.displayYPosition-this.displayYPosition < 0) {
@@ -130,12 +127,10 @@ public class Monster {
         } else {
             tempToY = (byte) (this.displayYPosition + changeY);
         }
-        if (this.occupiedSpace.find(tempToX, tempToY) != null){
+        if (registry.findInSpace(tempToX, tempToY) != null){
             return;
         }
-        System.out.println(tempToX);
-        System.out.println(tempToY);
-        this.occupiedSpace.moveItemInSpace(tempDisplayX, tempDisplayY, tempToX, tempToY);
+        registry.moveItemInSpace(tempDisplayX, tempDisplayY, tempToX, tempToY);
         this.xPosition += changeX;
         this.yPosition += changeY;
         this.displayXPosition = tempToX;
@@ -143,6 +138,6 @@ public class Monster {
         monster.changePos((byte) displayXPosition, (byte) displayYPosition);
     }
     public void attackPlayer(Player player){
-        return;
+        player.changeHealth((short) -damage);
     }
 }

@@ -1,24 +1,34 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class PlayerController {
     private int x;
     private int y;
     private byte displayX;
     private byte displayY;
     private Player player;
-    private OccupiedSpaceController occupiedSpace;
-    private EntityRegistry registry;
-    public PlayerController(int x, int y, byte displayX, byte displayY, GameWindow window, OccupiedSpaceController occupiedSpace, EntityRegistry registry){
+    private GameRegistry registry;
+    private short health = 100;
+    private int damage = 5;
+    public PlayerController(int x, int y, byte displayX, byte displayY, GameRegistry registry){
         this.x = x;
         this.y = y;
         this.displayX = displayX;
         this.displayY = displayY;
-        this.player =  new Player((byte) displayX, (byte) displayY, window, occupiedSpace, registry);
-        this.occupiedSpace = occupiedSpace;
+        this.player =  new Player((byte) displayX, (byte) displayY, registry, this);
         this.registry = registry;
+        java.util.Timer timer = new Timer();
+        TimerTask checkHealth = new TimerTask(){
+            public void run(){
+                checkHealth();
+            }
+        };
+        timer.schedule(checkHealth, 0, 200);
     }
     private void changePosition(int x, int y, byte displayX, byte displayY){
-        if (this.occupiedSpace.find(displayX, displayY) != null){
+        if (registry.findInSpace(displayX, displayY) != null){
             return;
         }
         this.player.changePosition(this.displayX, this.displayY, displayX, displayY);
@@ -44,7 +54,7 @@ public class PlayerController {
         } else {
             tempToY = (byte) (this.displayY + changeY);
         }
-        if (this.occupiedSpace.find(tempToX, tempToY) != null){
+        if (registry.findInSpace(tempToX, tempToY) != null){
             return;
         }
         this.x += changeX;
@@ -71,5 +81,18 @@ public class PlayerController {
                 movePosition(1, 0);
                 break;
         }
+    }
+    public void checkHealth(){
+        if (health <= 0){
+            handleDeath();
+        }
+    }
+    public void handleDeath(){
+        JOptionPane.showMessageDialog(registry.getWindow(),"You Died");
+        registry.getWindow().close();
+        System.exit(666);
+    }
+    public void changeHealth(short change){
+        health += change;
     }
 }

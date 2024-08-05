@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 public class Sprite {
     private JLabel sprite;
-    Sprite(int displayX, int displayY, ImageIcon asset, JFrame window){
+    Sprite(int displayX, int displayY, ImageIcon asset, GameWindow window){
         Container contentPane = window.getContentPane();
         JLabel sprite = new JLabel();
         sprite.setBounds(48*displayX, 48*displayY,48,48);

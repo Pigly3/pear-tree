@@ -5,13 +5,14 @@ public class GameWindow extends JFrame{
     GameWindow() {
         Assets assets = new Assets();
         OccupiedSpaceController occupiedSpace = new OccupiedSpaceController();
-        EntityRegistry registry = new EntityRegistry();
+        GameRegistry registry = new GameRegistry(this);
         this.setTitle("Pear Tree: Awakening");
         this.setLayout(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(782,805));
         this.setMinimumSize(new Dimension(782,805));
         this.setResizable(false);
+        //new Sprite(15, 15, assets.grapevine, this);
         ImageIcon icon = new ImageIcon(getClass().getResource("/assets/icon.png"));
         //Position 0,0
         Tile placeholder = new Tile((byte) 16, (byte) 16, assets.grapevine, this);
@@ -23,8 +24,8 @@ public class GameWindow extends JFrame{
             }
             tileSpace[i] = currentLine;
         }
-        PlayerController player = new PlayerController((byte) 7, (byte) 7, (byte) 7, (byte) 7, this, occupiedSpace, registry);
-        Monster monster = new Monster((byte) 3,(byte) 3, this, occupiedSpace, registry);
+        PlayerController player = new PlayerController((byte) 7, (byte) 7, (byte) 7, (byte) 7, registry);
+        Monster monster = new Monster((byte) 3,(byte) 3, registry);
         //General Setup
         this.pack();
         this.addKeyListener(new KeyListener() {
@@ -43,5 +44,9 @@ public class GameWindow extends JFrame{
         });
         this.setIconImage(icon.getImage());
         this.setVisible(true);
+    }
+    public void close(){
+        this.setVisible(false);
+        this.dispose();
     }
 }
